@@ -18,7 +18,7 @@ import html
 import json
 
 #Global var for counting turns
-turnCurr = 0
+turnCurr = 1
 
 #Styles for the text lines
 styles = getSampleStyleSheet()
@@ -61,10 +61,10 @@ def window():
    turnButton.setStyleSheet(buttonStyleString)
    turnButton.setIcon(QIcon(settings["button_icon_filename"]))
    turnButton.setIconSize(QSize(settings["button_icon_size_W"],settings["button_icon_size_H"]))
-   turnButton.clicked.connect(lambda: turnButton_clicked(settings["printer_name"], widget))
+   turnButton.clicked.connect(lambda: turnButton_clicked(settings["printer_name"], settings["ticket_turn_label"], settings["ticket_store_name"], widget))
 
    widget.setGeometry(0, 0, screenW, screenH)
-   widget.setWindowTitle(settings["window_label_text"])
+   widget.setWindowTitle(settings["window_title_text"])
    widget.showMaximized()
    
    widget.setWindowFlags(Qt.WindowStaysOnTopHint)
@@ -75,7 +75,10 @@ def window():
    widget.show()
    sys.exit(app.exec_())
 
-def turnButton_clicked(printerName, widget):
+def turnButton_clicked(printerName, turnLabel, storeName, widget):
+   #Getting current turn number
+   global turnCurr
+
    #Building the date line
    now = datetime.now()
    if now.day < 9:
@@ -105,26 +108,15 @@ def turnButton_clicked(printerName, widget):
    else:
       nowStr += str(now.second)
 
-   #Calculating current turn
-   global turnCurr
-   turnCurr += 1
-
-   if turnCurr > 99:
-      turnCurr = 1
-   if turnCurr > 9:
-      turnStr = str(turnCurr)
-   else:
-      turnStr = "0" + str(turnCurr)
-
    #Creating plain text
    tmpSource = tempfile.mktemp (".txt")
-   open (tmpSource, "a").write ("Turn: \n")
+   open (tmpSource, "a").write (turnLabel+"\n")
    if turnCurr > 9:
      open (tmpSource, "a").write (str(turnCurr))
    else:
      open (tmpSource, "a").write ("0"+str(turnCurr))
    open (tmpSource, "a").write ("\n"+nowStr)
-   open (tmpSource, "a").write("\nNAME") #TODO set from settings.json
+   open (tmpSource, "a").write("\n"+storeName) #TODO set from settings.json
 
    #Creating PDF file for printing
    tmpFile = tempfile.mktemp(".pdf")
@@ -142,6 +134,8 @@ def turnButton_clicked(printerName, widget):
    global myH1
    global myItalic
 
+   print(text)
+
    story = []
    story.append(Paragraph(text[0], myNormal))
    story.append(Paragraph(text[1], myH1))
@@ -152,8 +146,16 @@ def turnButton_clicked(printerName, widget):
    doc.build(story)
    
    #Printing (printer taken from settings.json)
-   win32api.ShellExecute(0, "printto", tmpFile, f'"{printerName}"', ".", 0)
+   #win32api.ShellExecute(0, "printto", tmpFile, f'"{printerName}"', ".", 0)
 
+   #Calculating next turn
+   turnCurr += 1
+   if turnCurr > 99:
+      turnCurr = 1
+   if turnCurr > 9:
+      turnStr = str(turnCurr)
+   else:
+      turnStr = "0" + str(turnCurr)
 
 
 if __name__ == '__main__':

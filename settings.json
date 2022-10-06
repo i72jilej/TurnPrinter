@@ -1,5 +1,10 @@
 {
-	"window_label_text": "Print Turn",
+	"//Window configuration": "_",
+
+	"//window_label_text": "Name for the window's title",
+	"window_title_text": "Print Turn",
+
+
 	"button_label_text": "Print Turn",
 	"button_label_color": "#7fdd00",
 	"button_background_color": "#3001c9",
@@ -11,5 +16,7 @@
 	"button_icon_filename": "logo.png",
 	"button_icon_size_H": 150,
 	"button_icon_size_W": 150,
-	"printer_name": "POS-80C"
+	"printer_name": "POS-80C",
+	"ticket_turn_label": "Turn",
+	"ticket_store_name": "Store Name"
 }
