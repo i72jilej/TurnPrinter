@@ -61,7 +61,7 @@ def window():
    turnButton.setStyleSheet(buttonStyleString)
    turnButton.setIcon(QIcon(settings["button_icon_filename"]))
    turnButton.setIconSize(QSize(settings["button_icon_size_W"],settings["button_icon_size_H"]))
-   turnButton.clicked.connect(lambda: turnButton_clicked(settings["printer_name"], settings["ticket_turn_label"], settings["ticket_store_name"], widget))
+   turnButton.clicked.connect(lambda: turnButton_clicked(settings["printer_name"], settings["ticket_turn_label"], settings["ticket_store_name"], settings["debug_mode"] ,widget))
 
    widget.setGeometry(0, 0, screenW, screenH)
    widget.setWindowTitle(settings["window_title_text"])
@@ -75,7 +75,7 @@ def window():
    widget.show()
    sys.exit(app.exec_())
 
-def turnButton_clicked(printerName, turnLabel, storeName, widget):
+def turnButton_clicked(printerName, turnLabel, storeName, debugMode, widget):
    #Getting current turn number
    global turnCurr
 
@@ -134,7 +134,8 @@ def turnButton_clicked(printerName, turnLabel, storeName, widget):
    global myH1
    global myItalic
 
-   print(text)
+   if debugMode == 0:
+      print(text)
 
    story = []
    story.append(Paragraph(text[0], myNormal))
@@ -146,7 +147,10 @@ def turnButton_clicked(printerName, turnLabel, storeName, widget):
    doc.build(story)
    
    #Printing (printer taken from settings.json)
-   #win32api.ShellExecute(0, "printto", tmpFile, f'"{printerName}"', ".", 0)
+   if debugMode == 0:
+      win32api.ShellExecute(0, "printto", tmpFile, f'"{printerName}"', ".", 0)
+   else:
+      print("WARNIGN: Debug mode activated, ticket not printed")
 
    #Calculating next turn
    turnCurr += 1
