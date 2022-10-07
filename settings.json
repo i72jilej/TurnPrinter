@@ -2,7 +2,7 @@
 	"//debug_mode": "Turns debug mode on (1) / off (0). In debug mode the ticket won't be printed",
 	"debug_mode": 1,
 
-	"//window_label_text": "Name for the window's title",
+	"//window_title_text": "Name for the window's title",
 	"window_title_text": "Print Turn",
 
 
@@ -48,5 +48,15 @@
 	"ticket_turn_label": "Turn",
 
 	"//ticket_store_name": "Name of the store in the ticket",
-	"ticket_store_name": "Store Name"
+	"ticket_store_name": "Store Name",
+
+	
+	"//wait_box_timeout": "Time in seconds before closing the waiting message box",
+	"wait_box_timeout": 5,
+
+	"//wait_box_title": "Title for the waiting message box",
+	"wait_box_title": "Printing",
+
+	"//wait_box_text": "Message for the waiting message box",
+	"wait_box_text": "Printing ticket, please wait"
 }

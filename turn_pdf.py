@@ -1,6 +1,6 @@
 import sys
 
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QMessageBox
 from PyQt5.QtGui import QIcon, QFont
 from PyQt5.QtCore import pyqtSlot, QSize, Qt
 
@@ -35,6 +35,39 @@ myItalic = ParagraphStyle('myItalic',
                            parent=styles["Italic"],
                            spaceAfter=14)
 
+#Class for the waiting message box
+class CustomMessageBox(QMessageBox):
+   def __init__(self, *__args):
+      QMessageBox.__init__(self)
+      self.timeout = 0
+      self.autoclose = False
+      self.currentTime = 0
+      self.setWindowFlags(Qt.WindowStaysOnTopHint)
+      self.setWindowFlag(Qt.WindowCloseButtonHint, False)
+      self.setWindowFlag(Qt.WindowMinimizeButtonHint, False)
+      self.setWindowFlag(Qt.WindowMaximizeButtonHint, False)
+
+   def showEvent(self, QShowEvent):
+      self.currentTime = 0
+      if self.autoclose:
+         self.startTimer(1000)
+
+   def timerEvent(self, *args, **kwargs):
+      self.currentTime += 1
+      if self.currentTime >= self.timeout:
+         self.done(0)
+
+   @staticmethod
+   def showWithTimeout(timeoutSeconds, message, title, icon=QMessageBox.Information):
+      w = CustomMessageBox()
+      w.autoclose = True
+      w.timeout = timeoutSeconds
+      w.setText(message)
+      w.setWindowTitle(title)
+      w.setIcon(icon)
+      w.exec_()
+
+#Main Program
 def window():
    app = QApplication(sys.argv)
    widget = QWidget()
@@ -134,7 +167,7 @@ def turnButton_clicked(printerName, turnLabel, storeName, debugMode, widget):
    global myH1
    global myItalic
 
-   if debugMode == 0:
+   if debugMode == 1:
       print(text)
 
    story = []
@@ -151,6 +184,9 @@ def turnButton_clicked(printerName, turnLabel, storeName, debugMode, widget):
       win32api.ShellExecute(0, "printto", tmpFile, f'"{printerName}"', ".", 0)
    else:
       print("WARNIGN: Debug mode activated, ticket not printed")
+
+   #Showing wait message box
+   msg = CustomMessageBox.showWithTimeout(3, "Auto close in 3 seconds", "QMessageBox with autoclose", icon=QMessageBox.Warning)
 
    #Calculating next turn
    turnCurr += 1
