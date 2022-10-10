@@ -58,13 +58,14 @@ class CustomMessageBox(QMessageBox):
          self.done(0)
 
    @staticmethod
-   def showWithTimeout(timeoutSeconds, message, title, icon=QMessageBox.Information):
+   def showWithTimeout(timeoutSeconds, message, title, icon, sizeH, sizeW):
       w = CustomMessageBox()
       w.autoclose = True
       w.timeout = timeoutSeconds
-      w.setText(message)
+      w.setText("<font size = '40'>"+message+"</font>")
       w.setWindowTitle(title)
       w.setIcon(icon)
+      w.move(int(sizeW/2), int(sizeH/2))
       w.exec_()
 
 #Main Program
@@ -94,7 +95,12 @@ def window():
    turnButton.setStyleSheet(buttonStyleString)
    turnButton.setIcon(QIcon(settings["button_icon_filename"]))
    turnButton.setIconSize(QSize(settings["button_icon_size_W"],settings["button_icon_size_H"]))
-   turnButton.clicked.connect(lambda: turnButton_clicked(settings["printer_name"], settings["ticket_turn_label"], settings["ticket_store_name"], settings["debug_mode"] ,widget))
+   turnButton.clicked.connect(lambda: turnButton_clicked(settings["printer_name"], 
+                                                         settings["ticket_turn_label"], 
+                                                         settings["ticket_store_name"], 
+                                                         settings["debug_mode"],
+                                                         screenH, screenW,
+                                                         widget))
 
    widget.setGeometry(0, 0, screenW, screenH)
    widget.setWindowTitle(settings["window_title_text"])
@@ -108,7 +114,7 @@ def window():
    widget.show()
    sys.exit(app.exec_())
 
-def turnButton_clicked(printerName, turnLabel, storeName, debugMode, widget):
+def turnButton_clicked(printerName, turnLabel, storeName, debugMode, screenH, screenW, widget):
    #Getting current turn number
    global turnCurr
 
@@ -183,10 +189,10 @@ def turnButton_clicked(printerName, turnLabel, storeName, debugMode, widget):
    if debugMode == 0:
       win32api.ShellExecute(0, "printto", tmpFile, f'"{printerName}"', ".", 0)
    else:
-      print("WARNIGN: Debug mode activated, ticket not printed")
+      print("WARNING: Debug mode activated, ticket not printed")
 
    #Showing wait message box
-   msg = CustomMessageBox.showWithTimeout(3, "Auto close in 3 seconds", "QMessageBox with autoclose", icon=QMessageBox.Warning)
+   msg = CustomMessageBox.showWithTimeout(3, "Auto close in 3 seconds", "QMessageBox with autoclose", QMessageBox.Warning, screenH, screenW)
 
    #Calculating next turn
    turnCurr += 1
