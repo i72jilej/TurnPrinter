@@ -6,6 +6,7 @@
 	"window_title_text": "Print Turn",
 
 
+
 	"//button_label_text": "Caption for the printing button",
 	"button_label_text": "Print Turn",
 
@@ -40,8 +41,10 @@
 	"button_icon_size_W": 150,
 
 
+
 	"//printer_name": "Device name of the printer",
 	"printer_name": "POS-80C",
+
 
 
 	"//ticket_turn_label": "Text for the ticket",
@@ -51,8 +54,9 @@
 	"ticket_store_name": "Store Name",
 
 	
+	
 	"//wait_box_timeout": "Time in seconds before closing the waiting message box",
-	"wait_box_timeout": 5,
+	"wait_box_timeout": 4,
 
 	"//wait_box_title": "Title for the waiting message box",
 	"wait_box_title": "Printing",
